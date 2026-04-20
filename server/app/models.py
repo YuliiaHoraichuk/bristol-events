@@ -1,7 +1,8 @@
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import enum
+
+db = SQLAlchemy()
 
 # Order status options
 class OrderStatus(enum.Enum):
@@ -16,13 +17,6 @@ class DiscountTier(enum.Enum):
     TIER3 = "tier3"  # < 60 days
     STUDENT = "student"  # Student discount
     STANDARD = "standard"  # DEFAULT; for ease of python logic
-
-app= Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:RoseTea!2026@localhost/bristol_events'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
 
 # Venue: id, name, location, capacity
 class Venue(db.Model):
@@ -81,6 +75,7 @@ class Cancellation(db.Model):
     cancellation_timestamp = db.Column(db.DateTime(timezone=True), server_default=func.now())
     refund_amount = db.Column(db.Numeric(10, 2), nullable=False)
     type = db.Column(db.String(50), nullable=False)
+    order = db.relationship('Order', backref=db.backref('cancellation', uselist=False))
 
     # Foreign keys
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
@@ -107,13 +102,4 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     orders = db.relationship('Order', backref='customer', lazy=True)
-
-@app.route('/')
-def test():
-    return {'message': 'Hello, World!'}
-
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        
-    app.run(debug=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
