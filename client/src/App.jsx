@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import EventPage from './components/EventPage';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import UserPage from './pages/UserPage';
 import AdminPage from './pages/AdminPage';
 import AdminEvents from './pages/AdminEvents';
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/event/:id" element={<EventPage />} />
+          <Route path="/signup" element={<SignUp setUser={setUser} />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/events" element={<AdminEvents />} />

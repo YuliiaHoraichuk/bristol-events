@@ -45,7 +45,7 @@ const Header = ({ user, setUser }) => {
           /* LOGGED OUT */
           <>
             <Link to="/login" className="px-4 py-2 border rounded-lg">Log In</Link>
-            <button className="px-4 py-2 bg-accent text-white rounded-lg">Sign Up</button>
+            <Link to="/signup" className="px-4 py-2 bg-accent text-white rounded-lg">Sign Up</Link>
           </>
         )}
 

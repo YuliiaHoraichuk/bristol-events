@@ -7,21 +7,28 @@ const Login = ({ setUser }) => {
     const [error, setError] = useState("");
     const navigate = useNavigate(); // navigate vs link
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setError(""); // Empty str to clear previous errors
+        
+        try {
+            const response = await fetch("http://localhost:5000/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
 
-        if (password === 'password') {
-        //if (username === 'admin') {
-        //    navigate('/admin');
-        //} 
-            setError(''); // clear error msg FIND BETTER WAY TO-DO
-            setUser({ name: username, isAdmin: username === 'admin' });
-            navigate(username === 'admin' ? '/admin' : `/user/${username}`);
+            const data = await response.json();
+            if (response.ok) {
+                setUser({ name: username, isAdmin: data.isAdmin });
+                navigate(data.isAdmin ? '/admin' : `/user/${username}`);
+            } else {
+                setError(data.error); // invalid username or password, show error message from backend
+            }
+        } catch (err) {
+            setError('Login is unsuccessful. Please try again later.');
         }
-        else {
-            setError('Invalid username or password');
-        }
-};
+    };
 
     return (
         // Wrapper div to center, input fields and buttons inside + hidden error div

@@ -1,10 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EventCard from '../components/EventCard';
 import { tempEventData } from '../temp_data/TempEventData';
 
 const Home = () => {
     const categories = ["Music", "Family", "Food & Drink", "Outdoors", "Arts & Culture", "Spiritual", "Nightlife", "Workshops"];
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showFilters, setShowFilters] = useState(false); // setter function to toggle filter on mobile
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/events")
+            .then(res => res.json())
+            .then(data => {
+                setEvents(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching events from the dattabase:", err);
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <div className="flex flex-col md:flex-row gap-8 py-1">
@@ -69,17 +84,20 @@ const Home = () => {
             </div>
         </aside>
 
-        {/* Main Content */}
-        <section className="grow py-3">
-            {/* Path */}
-            <h1 className="text-1xl mb-6">All Events/</h1>
-            <div className="flex flex-col gap-4">
-                {/* Product Cards */}
-                <div className="p-10 text-center">
-                    {tempEventData.map((event) => (<EventCard key={event.id} event={event} />))}
+            {/* Main Content */}
+            <section className="grow py-3">
+                <h1 className="text-xl mb-6">All Events/</h1>
+                <div className="flex flex-col gap-4">
+                    {loading ? (<p className="text-center p-10">Loading...</p>
+                    ) : (
+                        <div className="flex flex-col gap-4">
+                            {events.map((event) => (
+                                <EventCard key={event.id} event={event} />
+                            ))}
+                        </div>
+                    )}
                 </div>
-            </div>
-        </section>
+            </section>
         </div>
     );
 };
