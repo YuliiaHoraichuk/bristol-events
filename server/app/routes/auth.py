@@ -48,7 +48,9 @@ def login():
     #Success: if user exists and pass hash matches, return user info for react
     if user and check_password_hash(user.password_hash, data.get('password')):
         return jsonify({
-            "name": user.username,
+            "message": "Login successful",
+            "id": user.id,
+            "username": user.username,
             "isAdmin": user.is_admin
         }), 200
     # Failure: if no user OR (for security measures) wrong password, return error message

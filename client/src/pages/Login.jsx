@@ -20,7 +20,11 @@ const Login = ({ setUser }) => {
 
             const data = await response.json();
             if (response.ok) {
-                setUser({ name: username, isAdmin: data.isAdmin });
+                //setUser({ id: data.id, name: username, isAdmin: data.isAdmin });
+                // Save user in local storage
+                const userData = { id: data.id, name: username, isAdmin: data.isAdmin };
+                localStorage.setItem('user', JSON.stringify(userData)); // Save to browser memory
+                setUser(userData);
                 navigate(data.isAdmin ? '/admin' : `/user/${username}`);
             } else {
                 setError(data.error); // invalid username or password, show error message from backend

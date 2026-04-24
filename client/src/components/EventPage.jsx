@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-const EventPage = () => {
+const EventPage = ({user}) => {
     // Hooks and state to fetch and display event details
     const { id } = useParams(); // get the event ID from the url
     const [event, setEvent] = useState(null);
@@ -56,11 +56,18 @@ const EventPage = () => {
 
     // B
     const handlePlaceOrder = async () => {
+        // Don't allow to place orders if not logged in
+        console.log(user.id)
+        if (!user || !user.id) {
+            alert("Please log in to purchase tickets.");
+            return;
+        }
         // To ensure no empty orders placed
         if (quantity < 1) return alert("Your order cannot be less than one ticket.");
 
         const orderData = {
             event_id: event.id,
+            user_id: user.id,
             quantity: parseInt(quantity),
             is_student: isStudent,
             total_price_frontend: totalPrice, // shown in the modal

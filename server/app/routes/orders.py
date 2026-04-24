@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime
-from ..models import db, Order, OrderStatus, Ticket, Event
+from ..models import db, Order, OrderStatus, Ticket, Event, User
 
 # RETURN all orders, a single order
 # UPDATE an order
@@ -30,6 +30,15 @@ def get_order(order_id):
     
     return jsonify(order_data)
 
+# RETURN ORDER FOR USER PURPOSES
+@orders_bp.route('/users/<int:user_id>/orders', methods=['GET'])
+def get_user_orders(user_id):
+    # Filter orders by the user_id
+    # Show by date
+    orders = Order.query.filter_by(user_id=user_id).order_by(Order.order_timestamp.desc()).all()
+    
+    return jsonify([order.to_dict() for order in orders])
+
 # UPDATE ORDER
 @orders_bp.route('/api/orders/<int:order_id>/status', methods=['PATCH'])
 def update_order_status(order_id):
@@ -48,6 +57,8 @@ def update_order_status(order_id):
 @orders_bp.route('/orders', methods=['POST'])
 def place_order():
     data = request.json
+
+    user_id = data.get('user_id')
     
     event_id = data.get('event_id')
     quantity = int(data.get('quantity'))
@@ -57,10 +68,10 @@ def place_order():
 
     # 2Create the order
     new_order = Order(
-        user_id=1, # Placeholder for now
+        user_id=user_id, # Placeholder for now
         event_id=event_id,
         total_price=total_price,
-        status=OrderStatus.PENDING 
+        status=OrderStatus.FULFILLED 
     )
 
     db.session.add(new_order)
@@ -79,3 +90,13 @@ def place_order():
 
     db.session.commit()
     return jsonify({"message": "Order created!", "id": new_order.id}), 201
+
+# CANCEL ORDER
+@orders_bp.route('/orders/<int:order_id>/cancel', methods=['PATCH'])
+def cancel_order(order_id):
+    order = Order.query.get_or_404(order_id)
+
+    order.status = OrderStatus.CANCELLED
+    db.session.commit()
+    
+    return jsonify({"message": "Order cancelled successfully", "status": "cancelled"})
