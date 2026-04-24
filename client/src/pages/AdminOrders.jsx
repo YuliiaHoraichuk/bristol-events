@@ -106,7 +106,7 @@ const AdminOrders = () => {
                                     <td className="p-4 text-gray-500">#{order.id}</td>
                                     <td className="p-4 font-medium">{order.user_name}</td>
                                     <td className="p-4">{order.event_name}</td>
-                                    <td className="p-4 font-bold">£{Number(order.price).toFixed(2)}</td>
+                                    <td className="p-4 font-bold">£{Number(order.total_price).toFixed(2)}</td>
                                     <td className="p-4 text-sm">{new Date(order.order_timestamp).toLocaleDateString()}</td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase ${

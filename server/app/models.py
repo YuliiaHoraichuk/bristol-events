@@ -51,6 +51,7 @@ class Order(db.Model):
         return {
             'id': self.id,
             'user_name': self.user.username, # backref to user
+            'user_id': self.user_id,
             'event_name': self.event.name, # backref to event
             'total_price': float(self.total_price),
             'status': self.status.value,
@@ -193,7 +194,9 @@ class User(db.Model):
     # Calculate total spent by user (for admin dashboard)
     @property
     def total_spent(self):
-        return sum(order.total_price for order in self.orders if order.status == OrderStatus.FULFILLED)
+        # My logic doesn't differentiate fulfilled and pending
+        ok_statuses = [OrderStatus.FULFILLED, OrderStatus.PENDING]
+        return sum(order.total_price for order in self.orders if order.status in ok_statuses)
 
     def to_dict(self):
         return {

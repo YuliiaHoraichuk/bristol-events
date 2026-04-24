@@ -1,3 +1,21 @@
+EVENT BOOKING APP
+
+Front: React + Tailwnd
+Back: Python + Flask
+
+To run:
+Server side:
+Front:
+
+Credits:
+
+https://unsplash.com/@pdcck
+https://unsplash.com/@dropfastcollective
+https://unsplash.com/@uxindo
+https://unsplash.com/@dafidvor
+
+---
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

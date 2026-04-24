@@ -4,7 +4,7 @@ const EventCard = ({ event }) => {
     return (
         <Link to={`/event/${event.id}`}>
             <div className="flex flex-col sm:flex-row my-3 bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all group cursor-pointer">
-                {/* Image */}
+                {/* Image. If path broken, apply graceful degradation: placeholder+alt */}
                 <div className="w-full sm:w-48 h-48 sm:h-auto shrink-0 bg-gray-100">
                     <img 
                         src={event.img_filename ? `http://localhost:5000/static/uploads/${event.img_filename}` : 'https://via.placeholder.com/400x300?text=No+Image'} 

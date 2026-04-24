@@ -5,6 +5,20 @@ const AdminUsers = () => {
 	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(true);
 
+	// rewrite as async await later if possible. 
+	// For some reason throws error when then ... catch doesn't 
+	const handleDeleteUser = (userId) => {
+
+    fetch(`http://localhost:5000/api/users/${userId}`, { method: 'DELETE' })
+        .then(res => {
+            if (res.ok) {
+                // update state
+                setUsers(users.filter(u => u.id !== userId));
+            }
+        })
+        .catch(err => console.log("Delete User failed:", err));
+};
+
 	useEffect(() => {
 		const fetchUsers = async () => {
 			try {
@@ -37,6 +51,7 @@ const AdminUsers = () => {
 						<th className="border p-2 text-left">Is Admin</th>
 						<th className="border p-2 text-left">Orders</th>
 						<th className="border p-2 text-left">Total Spent</th>
+						<th className="border p-2 text-left">Delete</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -47,11 +62,18 @@ const AdminUsers = () => {
 							<td className="border p-2">{user.email}</td>
 							<td className="border p-2">{user.is_admin ? "Yes" : "No"}</td>
 							<td className="border p-2">
+								{/* Redirect to orders and filter */}
 								<Link to={`/admin/orders?userId=${user.id}&userName=${user.username}`}
 								className="text-accent hover:underline mr-4"> View Orders </Link>
 							</td>
 							{/* Return 0 explicitly if no orders placed */}
 							<td className="border p-2">£{(user.total_spent || 0).toFixed(2)}</td>
+							<td className="border p-2">
+								<button 
+									onClick={() => handleDeleteUser(user.id)}
+									className="text-red-600 font-bold hover:underline"
+								> Delete </button>
+							</td>
 						</tr>
 					))}
 				</tbody>
